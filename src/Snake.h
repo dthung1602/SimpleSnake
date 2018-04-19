@@ -40,13 +40,16 @@ private:
 
     void eat(World &world);
 
-    void cut();
+    void cut(BodyIter position);
 
     void grow();
 
     void checkSelfIntersection();
 
     void checkWallCollision(World &world);
+
+    template <typename V, typename U>
+    bool isElapse(sf::Vector2<V> point1, sf::Vector2<U> point2);
 
     sf::Vector2i getRealDirection();
 

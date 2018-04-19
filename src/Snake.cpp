@@ -48,11 +48,9 @@ void Snake::move(World &world) {
 
 void Snake::eat(World &world) {
     auto food = world.getFoodPosition();
-    cout << "food: " << food.x << " - " << food.y << endl;
-    for (auto &i : body)
-        cout << i.getPosition().x << " " << i.getPosition().y << endl;
+    auto head = body[0].getPosition();
 
-    if (containPoint(food) != getEndOfBody()) {
+    if (isElapse(food, head)) {
         grow();
         world.eatFood();
     }
@@ -88,12 +86,20 @@ void Snake::reset(World &world) {
 
 }
 
-void Snake::cut() {
-
+void Snake::cut(BodyIter position) {
+    // TODO -life
+    body.erase(position, getEndOfBody());
 }
 
 void Snake::checkWallCollision(World &world) {
-
+    auto head = body[0].getPosition();
+    auto worldSize = world.getWorldSize();
+    if (head.x < blockSize or head.x > worldSize.x - blockSize or
+        head.y < blockSize or head.y > worldSize.y - blockSize) {
+        // TODO
+        cout << "YOU HAVE LOST!";
+        exit(EXIT_SUCCESS);
+    }
 }
 
 Snake::BodyIter Snake::containPoint(sf::Vector2f point) {
@@ -103,10 +109,7 @@ Snake::BodyIter Snake::containPoint(sf::Vector2f point) {
     for (auto iter = body.begin(); iter != end; iter++) {
         auto blockPos = iter->getPosition();
 
-        if (blockPos.x - halfBlock < point.x and
-            blockPos.x + halfBlock > point.x and
-            blockPos.y - halfBlock < point.y and
-            blockPos.y + halfBlock > point.y)
+        if (isElapse(blockPos, point))
             return iter;
     }
 
@@ -130,7 +133,13 @@ sf::Vector2i Snake::getRealDirection() {
 }
 
 void Snake::checkSelfIntersection() {
-
+    auto head = body[0].getPosition();
+    auto end = getEndOfBody();
+    for (auto iter = body.begin() + 1; iter != end; iter++)
+        if (isElapse(head, iter->getPosition())) {
+            cout << "*****   CUT at " << distance(body.begin(), iter) << endl;
+            cut(iter);
+        }
 }
 
 void Snake::grow() {
@@ -139,4 +148,13 @@ void Snake::grow() {
     auto tailPos = body[size - 1].getPosition() * 2.0f - body[size - 2].getPosition();
     body.push_back(body[size - 1]);
     body[size].setPosition(tailPos);
+}
+
+template<typename V, typename U>
+bool Snake::isElapse(sf::Vector2<V> point1, sf::Vector2<U> point2) {
+    auto halfBlock = blockSize / 2;
+    return point1.x - halfBlock < point2.x and
+           point1.x + halfBlock > point2.x and
+           point1.y - halfBlock < point2.y and
+           point1.y + halfBlock > point2.y;
 }
