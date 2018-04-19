@@ -13,7 +13,14 @@ Game::Game() : window(GAME_NAME),
                snake(world) {}
 
 void Game::handleInput() {
-
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+        snake.turn(Direction::UP);
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+        snake.turn(Direction::DOWN);
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+        snake.turn(Direction::LEFT);
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+        snake.turn(Direction::RIGHT);
 }
 
 void Game::update() {

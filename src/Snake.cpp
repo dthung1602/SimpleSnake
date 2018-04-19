@@ -46,11 +46,6 @@ void Snake::move() {
     cout << realDirection.x << " * " << realDirection.y << endl;
     body[0].setPosition(headPos.x + (int) blockSize * realDirection.x,
                         headPos.y + (int) blockSize * realDirection.y);
-
-//    for (auto &i : body)
-//        cout << i.getPosition().x << " ";
-//    cout << endl;
-
 }
 
 void Snake::eat() {
