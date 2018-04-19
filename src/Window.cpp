@@ -3,10 +3,13 @@
 //
 
 #include "Window.h"
-
+#include "TextBox.h"
 
 void Window::beginDraw() {
     window.clear(sf::Color::Black);
+
+    for (auto &textboxes : textboxes)
+        textboxes->render(*this);
 }
 
 void Window::endDraw() {
@@ -39,7 +42,6 @@ void Window::toggleFullScreen() {
 void Window::setup(const std::string &title, sf::Vector2u size) {
     windowTitle = title;
     defaultSize = size;
-    window.setFramerateLimit(60);
     create();
 }
 
@@ -50,4 +52,6 @@ void Window::create() {
 
 void Window::destroy() {
     window.close();
+    for (auto ptr : textboxes)
+        delete ptr;
 }

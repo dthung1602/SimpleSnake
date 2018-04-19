@@ -1,27 +1,32 @@
-#include "src/Game.h"
-
-#include <zconf.h>
 #include <iostream>
-using  namespace std;
-std::string getpath() {
-    char buf[100 + 1];
-    if (readlink("/proc/self/exe", buf, sizeof(buf) - 1) == -1)
-        throw std::string("readlink() failed");
-    std::string str(buf);
-    return str.substr(0, str.rfind('/'));
-}
+#include <chrono>
+#include <thread>
 
-struct S {
-public:
-    float f = 12312.0000023f;
-};
+using namespace std;
+
+#include <SFML/Graphics.hpp>
 
 int main() {
-    cout << getpath() << endl;
+    sf::Font font;
+    if (!font.loadFromFile("../resources/arial.ttf"))
+        exit(1);
 
-    unsigned int u = 12312U;
-    float f = -1;
-    S s;
-    int i = static_cast<int>(s.f);
-    cout<< (int) s.f / u  << endl;
+    sf::Text text("Testing", font, 60);
+    text.setPosition(5, 5);
+    text.setFillColor(sf::Color::White);
+
+    sf::RenderWindow window({500, 300}, "Font");
+
+    int i = 0;
+
+    while (true) {
+        window.clear(sf::Color::Black);
+        window.draw(text);
+        window.display();
+        cout << i++ << endl;
+        this_thread::sleep_for(chrono::milliseconds(500));
+    }
+
+    window.close();
+    return 0;
 }

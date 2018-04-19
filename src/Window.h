@@ -6,12 +6,16 @@
 #define SFMLSNAKE_WINDOW_H
 
 #include <string>
+#include <vector>
+
 #include <SFML/Graphics.hpp>
 
+class TextBox;
+
 class Window {
+
 public:
     //----------------------- ctors and dtors----------------------------
-    Window() = default;
 
     explicit Window(const std::string &title, sf::Vector2u defaultSize = {DEFAULT_WIDTH, DEFAULT_HEIGHT}) {
         setup(title, defaultSize);
@@ -39,6 +43,9 @@ public:
 
     auto getWindowSize() { return window.getSize(); };
 
+    //---------------------- textbox ----------------------------
+
+    auto &getTextboxes() { return textboxes; }
 
 private:
     void setup(const std::string &title, sf::Vector2u defaultSize);
@@ -50,9 +57,12 @@ private:
     static const unsigned int DEFAULT_WIDTH = 350;
     static const unsigned int DEFAULT_HEIGHT = 200;
 
+    std::vector<TextBox *> textboxes;
+
     sf::RenderWindow window;
     sf::Vector2u defaultSize;
     std::string windowTitle;
+
     bool done = false;
     bool fullscreen = false;
 };

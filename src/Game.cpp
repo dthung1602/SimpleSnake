@@ -3,14 +3,36 @@
 //
 
 #include <iostream>
+#include <zconf.h>
+
 #include "Game.h"
+#include "TextBox.h"
 
 using namespace std;
 
 
 Game::Game() : window(GAME_NAME),
                world(window),
-               snake(world) {}
+               snake(world) {
+
+    // load font
+    std::shared_ptr<sf::Font> fontPtr(new sf::Font());
+    if (!fontPtr->loadFromFile("../resources/arial.ttf"))    // todo fix path
+        exit(EXIT_FAILURE);
+
+    auto &textboxes = window.getTextboxes();
+
+    auto textbox = new TextBox("blah", fontPtr, 20);
+
+    textbox->setPadding({5, 5});
+    textbox->setPosition({30, 30});
+    textbox->setTextColor(sf::Color::White);
+
+    textbox->setBackgroundColor(sf::Color::Magenta);
+    textbox->setBackgroundSize({100, 50});
+
+    textboxes.push_back(textbox);
+}
 
 void Game::handleInput() {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
