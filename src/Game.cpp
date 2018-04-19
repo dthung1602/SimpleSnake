@@ -17,11 +17,12 @@ void Game::handleInput() {
 }
 
 void Game::update() {
-//    if (timePassed) {
+    if (timePassed) {
+        cout << "Updated" << endl;
         window.update();
         world.update(snake);
         snake.update(world);
-//    }
+    }
 }
 
 void Game::render() {

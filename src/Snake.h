@@ -17,11 +17,11 @@ public:
 
     void update(World &world);
 
-    void turn(Direction d);
+    void turn(sf::Vector2i direc);
 
     void render(Window &window);
 
-    bool is_dead();
+    bool isDead();
 
     void reset(World &world);
 
@@ -40,11 +40,12 @@ private:
 
     void checkCollision(Window &window);
 
+    sf::Vector2i getRealDirection();
+
     sf::Vector2i direction = Direction::NONE;
-    bool just_changed_direction = false;
+
     unsigned int blockSize;
     std::deque<sf::RectangleShape> body;
-    sf::Vector2i tail;
 };
 
 

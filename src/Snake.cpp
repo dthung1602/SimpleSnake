@@ -16,7 +16,7 @@ Snake::Snake(World &world, unsigned int length)
         body[i].setPosition(xStart + i * blockSize, worldSize.y / 2.0f);
         cout << body[i].getPosition().x << " - " << body[i].getPosition().y << endl;
         body[i].setFillColor(BODY_COLOR);
-        body[i].setSize({blockSize - 0.5f, blockSize - 0.5f});
+        body[i].setSize({blockSize - 1, blockSize - 1});
     }
 
     body[0].setFillColor(HEAD_COLOR);
@@ -24,23 +24,33 @@ Snake::Snake(World &world, unsigned int length)
 
 void Snake::update(World &world) {
     move();
-    eat();
+//    eat();
 }
 
 void Snake::move() {
-    // remove tail
-//    tail = body.back();
-    body.pop_back();
+    for (auto &i : body)
+        cout << i.getPosition().x << " ";
+    cout << endl;
 
-    // add head
-    sf::Vector2i head;
-    if (just_changed_direction) {
-//        head = direction + body[0];
-        just_changed_direction = false;
+    auto realDirection = direction;
+    if (direction == Direction::NONE) {
+        realDirection = getRealDirection();
     } else {
-//        head = (body[0] * 2 - body[1]);
+        direction = Direction::NONE;
     }
-//    body.push_front(head);
+
+    for (auto i = body.size() - 1; i > 0; i--)
+        body[i].setPosition(body[i - 1].getPosition());
+
+    auto headPos = body[0].getPosition();
+    cout << realDirection.x << " * " << realDirection.y << endl;
+    body[0].setPosition(headPos.x + (int) blockSize * realDirection.x,
+                        headPos.y + (int) blockSize * realDirection.y);
+
+//    for (auto &i : body)
+//        cout << i.getPosition().x << " ";
+//    cout << endl;
+
 }
 
 void Snake::eat() {
@@ -69,7 +79,7 @@ void Snake::render(Window &window) {
         window.draw(block);
 }
 
-bool Snake::is_dead() {
+bool Snake::isDead() {
 //    // check self-intersect
 //    if (body.size() != coordinate_set.size())
 //        return true;
@@ -109,6 +119,15 @@ bool Snake::containPoint(sf::Vector2u vector) {
 const sf::Color Snake::BODY_COLOR = sf::Color::Green;
 const sf::Color Snake::HEAD_COLOR = sf::Color::Yellow;
 
-void Snake::turn(Direction d) {
+void Snake::turn(sf::Vector2i direc) {
+    if (direc != !getRealDirection())
+        direction = direc;
+}
 
+sf::Vector2i Snake::getRealDirection() {
+    auto direction = body[0].getPosition() - body[1].getPosition();
+    return sf::Vector2i(
+            (int) direction.x / (int) blockSize,
+            (int) direction.y / (int) blockSize
+    );
 }

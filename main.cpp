@@ -11,6 +11,17 @@ std::string getpath() {
     return str.substr(0, str.rfind('/'));
 }
 
+struct S {
+public:
+    float f = 12312.0000023f;
+};
+
 int main() {
     cout << getpath() << endl;
+
+    unsigned int u = 12312U;
+    float f = -1;
+    S s;
+    int i = static_cast<int>(s.f);
+    cout<< (int) s.f / u  << endl;
 }

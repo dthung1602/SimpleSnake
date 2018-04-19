@@ -36,7 +36,7 @@ private:
 
     sf::Clock clock;
     bool timePassed = false;
-    static const unsigned int frameRate = 60;
+    static const unsigned int frameRate = 2;
     static constexpr float timeInterval = 1.0f / frameRate;
 };
 
