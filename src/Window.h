@@ -47,8 +47,8 @@ private:
 
     void destroy();
 
-    static const unsigned int DEFAULT_WIDTH = 700;
-    static const unsigned int DEFAULT_HEIGHT = 400;
+    static const unsigned int DEFAULT_WIDTH = 350;
+    static const unsigned int DEFAULT_HEIGHT = 200;
 
     sf::RenderWindow window;
     sf::Vector2u defaultSize;

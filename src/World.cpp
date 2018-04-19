@@ -60,11 +60,11 @@ void World::spawnFood(Snake &snake) {
     auto maxX = (worldSize.x / blockSize) - 2;
     auto maxY = (worldSize.y / blockSize) - 2;
 
-    sf::Vector2u pos;
+    sf::Vector2f pos;
+    auto end = snake.getEndOfBody();
     do {
         pos = {rand() % maxX + 1, rand() % maxY + 1};
-        cout << pos.x << " " << pos.y << endl;
-    } while (snake.containPoint(pos));
+    } while (snake.containPoint(pos) != end);
 
 
     food.setPosition((pos.x + 0.5f) * blockSize, (pos.y + 0.5f) * blockSize);

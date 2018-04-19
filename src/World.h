@@ -14,7 +14,7 @@ class Snake;
 
 class World {
 public:
-    World(Window &window, unsigned int blockSize = BLOCK_SIZE);
+    explicit World(Window &window, unsigned int blockSize = BLOCK_SIZE);
 
     void update(Snake &snake);
 
@@ -25,6 +25,10 @@ public:
     auto getWorldSize() { return worldSize; }
 
     auto getBlockSize() { return blockSize; }
+
+    auto getFoodPosition() { return food.getPosition(); }
+
+    void eatFood() { foodEaten = true; }
 
 private:
     void spawnFood(Snake &snake);

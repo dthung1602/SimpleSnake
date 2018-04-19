@@ -25,7 +25,7 @@ void Game::handleInput() {
 
 void Game::update() {
     if (timePassed) {
-        cout << "Updated" << endl;
+        cout << "------------------------------" << endl;
         window.update();
         world.update(snake);
         snake.update(world);
@@ -43,7 +43,6 @@ void Game::render() {
 
 void Game::checkClock() {
     float sec = clock.getElapsedTime().asSeconds();
-//    cout << sec << endl;
     timePassed = (sec > timeInterval) ? (clock.restart(), true) : false;
 }
 

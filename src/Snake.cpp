@@ -10,12 +10,13 @@ Snake::Snake(World &world, unsigned int length)
           body(length) {
 
     auto worldSize = world.getWorldSize();
-    auto xStart = (worldSize.x - length * blockSize + 1) / 2.0f;
+    float x = (static_cast<int>(worldSize.x) / blockSize - length) / 2 * blockSize + blockSize / 2.0f; // NOLINT
+    float y = static_cast<int>(worldSize.y) / blockSize / 2 * blockSize + blockSize / 2.0f; // NOLINT
 
     for (int i = 0; i < length; i++) {
-        body[i].setPosition(xStart + i * blockSize, worldSize.y / 2.0f);
-        cout << body[i].getPosition().x << " - " << body[i].getPosition().y << endl;
+        body[i].setPosition(x + i * blockSize, y);
         body[i].setFillColor(BODY_COLOR);
+        body[i].setOrigin(blockSize / 2.0f, blockSize / 2.0f);
         body[i].setSize({blockSize - 1, blockSize - 1});
     }
 
@@ -23,15 +24,13 @@ Snake::Snake(World &world, unsigned int length)
 }
 
 void Snake::update(World &world) {
-    move();
-//    eat();
+    move(world);
+    checkSelfIntersection();
+    checkWallCollision(world);
+    eat(world);
 }
 
-void Snake::move() {
-    for (auto &i : body)
-        cout << i.getPosition().x << " ";
-    cout << endl;
-
+void Snake::move(World &world) {
     auto realDirection = direction;
     if (direction == Direction::NONE) {
         realDirection = getRealDirection();
@@ -43,31 +42,22 @@ void Snake::move() {
         body[i].setPosition(body[i - 1].getPosition());
 
     auto headPos = body[0].getPosition();
-    cout << realDirection.x << " * " << realDirection.y << endl;
     body[0].setPosition(headPos.x + (int) blockSize * realDirection.x,
                         headPos.y + (int) blockSize * realDirection.y);
 }
 
-void Snake::eat() {
-//    if (global::food and contain_point(*(global::food))) {
-//
-//        // eat food
-//        global::food->eaten();
-//
-//        // grow up
-//        Point new_tail(tail * 2 - body.back());
-//        body.push_back(tail);
-//        coordinate_set.insert(tail);
-//        tail = new_tail;
-//    }
+void Snake::eat(World &world) {
+    auto food = world.getFoodPosition();
+    cout << "food: " << food.x << " - " << food.y << endl;
+    for (auto &i : body)
+        cout << i.getPosition().x << " " << i.getPosition().y << endl;
+
+    if (containPoint(food) != getEndOfBody()) {
+        grow();
+        world.eatFood();
+    }
 }
 
-//void Snake::turn(Direction d) {
-//    if (d != direction and not d.is_opposite(direction)) {
-//        direction = d;
-//        just_changed_direction = true;
-//    }
-//}
 
 void Snake::render(Window &window) {
     for (auto &block : body)
@@ -102,13 +92,25 @@ void Snake::cut() {
 
 }
 
-void Snake::checkCollision(Window &window) {
+void Snake::checkWallCollision(World &world) {
 
 }
 
-bool Snake::containPoint(sf::Vector2u vector) {
-    // TODO
-    return false;
+Snake::BodyIter Snake::containPoint(sf::Vector2f point) {
+    auto halfBlock = static_cast<float>(blockSize) / 2;
+
+    auto end = body.end();
+    for (auto iter = body.begin(); iter != end; iter++) {
+        auto blockPos = iter->getPosition();
+
+        if (blockPos.x - halfBlock < point.x and
+            blockPos.x + halfBlock > point.x and
+            blockPos.y - halfBlock < point.y and
+            blockPos.y + halfBlock > point.y)
+            return iter;
+    }
+
+    return end;
 }
 
 const sf::Color Snake::BODY_COLOR = sf::Color::Green;
@@ -125,4 +127,16 @@ sf::Vector2i Snake::getRealDirection() {
             (int) direction.x / (int) blockSize,
             (int) direction.y / (int) blockSize
     );
+}
+
+void Snake::checkSelfIntersection() {
+
+}
+
+void Snake::grow() {
+    cout << ">>>>>>>>>" << endl;
+    auto size = body.size();
+    auto tailPos = body[size - 1].getPosition() * 2.0f - body[size - 2].getPosition();
+    body.push_back(body[size - 1]);
+    body[size].setPosition(tailPos);
 }
