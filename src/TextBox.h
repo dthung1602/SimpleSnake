@@ -9,7 +9,7 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "Window.h"
+class Window;
 
 class TextBox {
 public:

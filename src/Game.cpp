@@ -3,7 +3,6 @@
 //
 
 #include <iostream>
-#include <zconf.h>
 
 #include "Game.h"
 #include "TextBox.h"
@@ -22,7 +21,7 @@ Game::Game() : window(GAME_NAME),
 
     auto &textboxes = window.getTextboxes();
 
-    auto textbox = new TextBox("blah", fontPtr, 20);
+    auto textbox = std::make_shared<TextBox>("blah", fontPtr, 20);
 
     textbox->setPadding({5, 5});
     textbox->setPosition({30, 30});
@@ -31,7 +30,7 @@ Game::Game() : window(GAME_NAME),
     textbox->setBackgroundColor(sf::Color::Magenta);
     textbox->setBackgroundSize({100, 50});
 
-    textboxes.push_back(textbox);
+    textboxes.push_back(std::move(textbox));
 }
 
 void Game::handleInput() {

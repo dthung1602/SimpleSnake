@@ -28,6 +28,8 @@ public:
 
     auto getFoodPosition() { return food.getPosition(); }
 
+    auto getWorldOffset() { return windowOffset; }
+
     void eatFood() { foodEaten = true; }
 
 private:
@@ -42,6 +44,8 @@ private:
 
     sf::RectangleShape food;
     bool foodEaten;
+
+    sf::Vector2f windowOffset;
 
     std::array<sf::RectangleShape, 4> walls;
 };

@@ -3,7 +3,6 @@
 //
 
 #include "Window.h"
-#include "TextBox.h"
 
 void Window::beginDraw() {
     window.clear(sf::Color::Black);
@@ -39,9 +38,10 @@ void Window::toggleFullScreen() {
     create();
 }
 
-void Window::setup(const std::string &title, sf::Vector2u size) {
+void Window::setup(const std::string &title, sf::Vector2u size, unsigned int height) {
     windowTitle = title;
     defaultSize = size;
+    hudHeight = height;
     create();
 }
 
@@ -52,6 +52,4 @@ void Window::create() {
 
 void Window::destroy() {
     window.close();
-    for (auto ptr : textboxes)
-        delete ptr;
 }

@@ -3,6 +3,7 @@
 //
 
 #include "TextBox.h"
+#include "Window.h"
 
 TextBox::TextBox(const std::string &content, std::shared_ptr<sf::Font> font, unsigned int textSize)
         : text(content, *font, textSize),

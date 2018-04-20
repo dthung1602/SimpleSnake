@@ -53,8 +53,8 @@ private:
 
     sf::Vector2i getRealDirection();
 
-    sf::Vector2i direction = Direction::NONE;
-
+    sf::Vector2f worldOffset;
+    sf::Vector2i direction;
     unsigned int blockSize;
     BodyContainer body;
 };

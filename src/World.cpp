@@ -16,6 +16,7 @@ World::World(Window &window, unsigned int blockSize) : blockSize(blockSize) {
     food.setFillColor(FOOD_COLOR);
     food.setSize({blockSize, blockSize});
     food.setOrigin(blockSize / 2.0f, blockSize / 2.0f);
+
     reset(window);
 
     // set colors
@@ -40,6 +41,7 @@ void World::render(Window &window) {
 
 void World::reset(Window &window) {
     worldSize = window.getWindowSize();
+    windowOffset = {0, window.getHUDHeight()};
     foodEaten = true;
 
     // wall 0, 1, 2, 3 = top, bottom, left, right

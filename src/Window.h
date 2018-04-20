@@ -10,15 +10,17 @@
 
 #include <SFML/Graphics.hpp>
 
-class TextBox;
+#include "TextBox.h"
 
 class Window {
 
 public:
     //----------------------- ctors and dtors----------------------------
 
-    explicit Window(const std::string &title, sf::Vector2u defaultSize = {DEFAULT_WIDTH, DEFAULT_HEIGHT}) {
-        setup(title, defaultSize);
+    explicit Window(const std::string &title,
+                    sf::Vector2u defaultSize = {DEFAULT_WIDTH, DEFAULT_HEIGHT},
+                    unsigned int hudHeight = DEFAULT_HUD_HEIGHT) {
+        setup(title, defaultSize, 0);
     };
 
     ~Window() { destroy(); };
@@ -43,25 +45,29 @@ public:
 
     auto getWindowSize() { return window.getSize(); };
 
+    auto getHUDHeight() { return hudHeight; }
+
     //---------------------- textbox ----------------------------
 
     auto &getTextboxes() { return textboxes; }
 
 private:
-    void setup(const std::string &title, sf::Vector2u defaultSize);
+    void setup(const std::string &title, sf::Vector2u defaultSize, unsigned int height);
 
     void create();
 
     void destroy();
 
-    static const unsigned int DEFAULT_WIDTH = 350;
-    static const unsigned int DEFAULT_HEIGHT = 200;
+    static const unsigned int DEFAULT_WIDTH = 700;
+    static const unsigned int DEFAULT_HEIGHT = 400;
+    static const unsigned int DEFAULT_HUD_HEIGHT = 50;
 
-    std::vector<TextBox *> textboxes;
+    std::vector<std::shared_ptr<TextBox>> textboxes;
 
     sf::RenderWindow window;
     sf::Vector2u defaultSize;
     std::string windowTitle;
+    unsigned int hudHeight;
 
     bool done = false;
     bool fullscreen = false;

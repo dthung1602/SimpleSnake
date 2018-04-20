@@ -9,6 +9,8 @@ Snake::Snake(World &world, unsigned int length)
         : blockSize(world.getBlockSize()),
           body(length) {
 
+    worldOffset = world.getWorldOffset();
+
     auto worldSize = world.getWorldSize();
     float x = (static_cast<int>(worldSize.x) / blockSize - length) / 2 * blockSize + blockSize / 2.0f; // NOLINT
     float y = static_cast<int>(worldSize.y) / blockSize / 2 * blockSize + blockSize / 2.0f; // NOLINT
