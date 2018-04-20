@@ -9,7 +9,8 @@ Snake::Snake(World &world, unsigned int length)
         : blockSize(world.getBlockSize()),
           body(length) {
 
-    worldOffset = world.getWorldOffset();
+    auto worldOffset = world.getWorldOffset();
+    auto halfBlock = blockSize / 2.0f;
 
     auto worldSize = world.getWorldSize();
     float x = (static_cast<int>(worldSize.x) / blockSize - length) / 2 * blockSize + blockSize / 2.0f; // NOLINT
@@ -18,8 +19,8 @@ Snake::Snake(World &world, unsigned int length)
     for (int i = 0; i < length; i++) {
         body[i].setPosition(x + i * blockSize, y);
         body[i].setFillColor(BODY_COLOR);
-        body[i].setOrigin(blockSize / 2.0f, blockSize / 2.0f);
         body[i].setSize({blockSize - 1, blockSize - 1});
+        body[i].setOrigin(worldOffset + sf::Vector2f{halfBlock, halfBlock});
     }
 
     body[0].setFillColor(HEAD_COLOR);

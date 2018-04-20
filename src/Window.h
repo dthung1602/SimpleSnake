@@ -20,7 +20,7 @@ public:
     explicit Window(const std::string &title,
                     sf::Vector2u defaultSize = {DEFAULT_WIDTH, DEFAULT_HEIGHT},
                     unsigned int hudHeight = DEFAULT_HUD_HEIGHT) {
-        setup(title, defaultSize, 0);
+        setup(title, defaultSize, hudHeight);
     };
 
     ~Window() { destroy(); };

@@ -15,7 +15,6 @@ World::World(Window &window, unsigned int blockSize) : blockSize(blockSize) {
 
     food.setFillColor(FOOD_COLOR);
     food.setSize({blockSize, blockSize});
-    food.setOrigin(blockSize / 2.0f, blockSize / 2.0f);
 
     reset(window);
 
@@ -40,8 +39,14 @@ void World::render(Window &window) {
 }
 
 void World::reset(Window &window) {
+    auto hudHeight = window.getHUDHeight();
+    windowOffset = {0, -static_cast<float>(hudHeight)};
     worldSize = window.getWindowSize();
-    windowOffset = {0, window.getHUDHeight()};
+    worldSize.y -= hudHeight;
+
+    cout << "--> " << worldSize.x << " " << worldSize.y << endl;
+    cout << "--> " << windowOffset.x << " " << windowOffset.y << endl;
+
     foodEaten = true;
 
     // wall 0, 1, 2, 3 = top, bottom, left, right
@@ -56,9 +61,14 @@ void World::reset(Window &window) {
     walls[1].setPosition(0, worldSize.y - blockSize);
     walls[2].setPosition(0, 0);
     walls[3].setPosition(worldSize.x - blockSize, 0);
+
+    // set offset
+    for (auto &wall : walls)
+        wall.setOrigin(windowOffset);
 }
 
 void World::spawnFood(Snake &snake) {
+    auto halfBlock = blockSize / 2.0f;
     auto maxX = (worldSize.x / blockSize) - 2;
     auto maxY = (worldSize.y / blockSize) - 2;
 
@@ -68,8 +78,8 @@ void World::spawnFood(Snake &snake) {
         pos = {rand() % maxX + 1, rand() % maxY + 1};
     } while (snake.containPoint(pos) != end);
 
-
     food.setPosition((pos.x + 0.5f) * blockSize, (pos.y + 0.5f) * blockSize);
+    food.setOrigin(windowOffset + sf::Vector2f(halfBlock, halfBlock));
     foodEaten = false;
 }
 
