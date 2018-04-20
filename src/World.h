@@ -30,7 +30,7 @@ public:
 
     auto getWorldOffset() { return windowOffset; }
 
-    void eatFood() { foodEaten = true; }
+    void removeFood() { foodEaten = true; }
 
 private:
     void spawnFood(Snake &snake);

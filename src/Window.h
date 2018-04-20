@@ -12,6 +12,8 @@
 
 #include "TextBox.h"
 
+class Game;
+
 class Window {
 
 public:
@@ -33,23 +35,17 @@ public:
 
     void endDraw();
 
-    void update();
+    void update(Game &game);
 
     void toggleFullScreen();
 
     //----------------------- getter ----------------------------
-
-    bool isDone() { return done; };
 
     bool isFullScreen() { return fullscreen; };
 
     auto getWindowSize() { return window.getSize(); };
 
     auto getHUDHeight() { return hudHeight; }
-
-    //---------------------- textbox ----------------------------
-
-    auto &getTextboxes() { return textboxes; }
 
 private:
     void setup(const std::string &title, sf::Vector2u defaultSize, unsigned int height);
@@ -58,18 +54,15 @@ private:
 
     void destroy();
 
-    static const unsigned int DEFAULT_WIDTH = 700;
-    static const unsigned int DEFAULT_HEIGHT = 400;
-    static const unsigned int DEFAULT_HUD_HEIGHT = 50;
-
-    std::vector<std::shared_ptr<TextBox>> textboxes;
+    static const unsigned int DEFAULT_WIDTH = 800;
+    static const unsigned int DEFAULT_HEIGHT = 550;
+    static const unsigned int DEFAULT_HUD_HEIGHT = 80;
 
     sf::RenderWindow window;
     sf::Vector2u defaultSize;
     std::string windowTitle;
     unsigned int hudHeight;
 
-    bool done = false;
     bool fullscreen = false;
 };
 

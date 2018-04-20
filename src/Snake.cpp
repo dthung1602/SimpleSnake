@@ -4,33 +4,17 @@
 using namespace std;
 
 #include "Snake.h"
+#include "Game.h"
 
-Snake::Snake(World &world, unsigned int length)
-        : blockSize(world.getBlockSize()),
-          body(length) {
-
-    auto worldOffset = world.getWorldOffset();
-    auto halfBlock = blockSize / 2.0f;
-
-    auto worldSize = world.getWorldSize();
-    float x = (static_cast<int>(worldSize.x) / blockSize - length) / 2 * blockSize + blockSize / 2.0f; // NOLINT
-    float y = static_cast<int>(worldSize.y) / blockSize / 2 * blockSize + blockSize / 2.0f; // NOLINT
-
-    for (int i = 0; i < length; i++) {
-        body[i].setPosition(x + i * blockSize, y);
-        body[i].setFillColor(BODY_COLOR);
-        body[i].setSize({blockSize - 1, blockSize - 1});
-        body[i].setOrigin(worldOffset + sf::Vector2f{halfBlock, halfBlock});
-    }
-
-    body[0].setFillColor(HEAD_COLOR);
+Snake::Snake(World &world, unsigned int length) : body(length) {
+    reset(world, length);
 }
 
-void Snake::update(World &world) {
+void Snake::update(World &world, Game &game) {
     move(world);
-    checkSelfIntersection();
-    checkWallCollision(world);
-    eat(world);
+    checkSelfIntersection(game);
+    checkWallCollision(world, game);
+    eat(world, game);
 }
 
 void Snake::move(World &world) {
@@ -49,13 +33,14 @@ void Snake::move(World &world) {
                         headPos.y + (int) blockSize * realDirection.y);
 }
 
-void Snake::eat(World &world) {
+void Snake::eat(World &world, Game &game) {
     auto food = world.getFoodPosition();
     auto head = body[0].getPosition();
 
     if (isElapse(food, head)) {
         grow();
-        world.eatFood();
+        game.incScore();
+        world.removeFood();
     }
 }
 
@@ -85,29 +70,41 @@ std::stringstream &operator<<(std::stringstream &stream, const Snake &snake) {
 }
 
 
-void Snake::reset(World &world) {
+void Snake::reset(World &world, unsigned int length) {
+    blockSize = world.getBlockSize();
+    body.reserve(length);
 
+    auto worldOffset = world.getWorldOffset();
+    auto halfBlock = blockSize / 2.0f;
+
+    auto worldSize = world.getWorldSize();
+    float x = (static_cast<int>(worldSize.x) / blockSize - length) / 2 * blockSize + blockSize / 2.0f; // NOLINT
+    float y = static_cast<int>(worldSize.y) / blockSize / 2 * blockSize + blockSize / 2.0f; // NOLINT
+
+    for (int i = 0; i < length; i++) {
+        body[i].setPosition(x + i * blockSize, y);
+        body[i].setFillColor(BODY_COLOR);
+        body[i].setSize({blockSize - 1, blockSize - 1});
+        body[i].setOrigin(worldOffset + sf::Vector2f{halfBlock, halfBlock});
+    }
+
+    body[0].setFillColor(HEAD_COLOR);
 }
 
 void Snake::cut(BodyIter position) {
-    // TODO -life
     body.erase(position, getEndOfBody());
 }
 
-void Snake::checkWallCollision(World &world) {
+void Snake::checkWallCollision(World &world, Game &game) {
     auto head = body[0].getPosition();
     auto worldSize = world.getWorldSize();
     if (head.x < blockSize or head.x > worldSize.x - blockSize or
         head.y < blockSize or head.y > worldSize.y - blockSize) {
-        // TODO
-        cout << "YOU HAVE LOST!";
-        exit(EXIT_SUCCESS);
+        game.decAllLives();
     }
 }
 
 Snake::BodyIter Snake::containPoint(sf::Vector2f point) {
-    auto halfBlock = static_cast<float>(blockSize) / 2;
-
     auto end = body.end();
     for (auto iter = body.begin(); iter != end; iter++) {
         auto blockPos = iter->getPosition();
@@ -135,18 +132,17 @@ sf::Vector2i Snake::getRealDirection() {
     );
 }
 
-void Snake::checkSelfIntersection() {
+void Snake::checkSelfIntersection(Game &game) {
     auto head = body[0].getPosition();
     auto end = getEndOfBody();
     for (auto iter = body.begin() + 1; iter != end; iter++)
         if (isElapse(head, iter->getPosition())) {
-            cout << "*****   CUT at " << distance(body.begin(), iter) << endl;
+            game.decLife();
             cut(iter);
         }
 }
 
 void Snake::grow() {
-    cout << ">>>>>>>>>" << endl;
     auto size = body.size();
     auto tailPos = body[size - 1].getPosition() * 2.0f - body[size - 2].getPosition();
     body.push_back(body[size - 1]);

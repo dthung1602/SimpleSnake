@@ -25,11 +25,8 @@ World::World(Window &window, unsigned int blockSize) : blockSize(blockSize) {
 
 
 void World::update(Snake &snake) {
-    if (foodEaten) {
-        cout << "eaten" << endl;
+    if (foodEaten)
         spawnFood(snake);
-        // TODO inc score
-    }
 }
 
 void World::render(Window &window) {
@@ -43,9 +40,6 @@ void World::reset(Window &window) {
     windowOffset = {0, -static_cast<float>(hudHeight)};
     worldSize = window.getWindowSize();
     worldSize.y -= hudHeight;
-
-    cout << "--> " << worldSize.x << " " << worldSize.y << endl;
-    cout << "--> " << windowOffset.x << " " << windowOffset.y << endl;
 
     foodEaten = true;
 

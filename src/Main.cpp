@@ -3,7 +3,7 @@
 int main() {
     Game game;
 
-    while (!game.getWindow().isDone()) {
+    while (!game.isDone()) {
         game.handleInput();
         game.update();
         game.render();

@@ -5,18 +5,16 @@
 #include "TextBox.h"
 #include "Window.h"
 
-TextBox::TextBox(const std::string &content, std::shared_ptr<sf::Font> font, unsigned int textSize)
-        : text(content, *font, textSize),
-          font(std::move(font)),
+TextBox::TextBox(const std::string &content, const sf::Font &font, unsigned int textSize)
+        : text(content, font, textSize),
           padding({5, 5}) {}
 
 void TextBox::setText(const std::string &content) {
     text.setString(content);
 }
 
-void TextBox::setFont(const std::shared_ptr<sf::Font> &font) {
-    this->font = font;
-    text.setFont(*font);
+void TextBox::setFont(const sf::Font &font) {
+    text.setFont(font);
 }
 
 void TextBox::setTextSize(unsigned int size) {
@@ -45,8 +43,10 @@ void TextBox::setPosition(sf::Vector2f position) {
 }
 
 void TextBox::render(Window &window) {
-    window.draw(background);
-    window.draw(text);
+    if (visible) {
+        window.draw(background);
+        window.draw(text);
+    }
 }
 
 

@@ -8,6 +8,8 @@
 #include "Direction.h"
 #include "World.h"
 
+class Game;
+
 class Snake {
     friend std::stringstream &operator<<(std::stringstream &stream, const Snake &snake); // for debugging
 
@@ -17,7 +19,7 @@ public:
 
     explicit Snake(World &world, unsigned int length = INIT_LENGTH);
 
-    void update(World &world);
+    void update(World &world, Game &game);
 
     void turn(sf::Vector2i direc);
 
@@ -25,7 +27,7 @@ public:
 
     bool isDead();
 
-    void reset(World &world);
+    void reset(World &world, unsigned int length = INIT_LENGTH);
 
     BodyIter containPoint(sf::Vector2f point);
 
@@ -38,15 +40,15 @@ private:
 
     void move(World &world);
 
-    void eat(World &world);
+    void eat(World &world, Game &game);
 
     void cut(BodyIter position);
 
     void grow();
 
-    void checkSelfIntersection();
+    void checkSelfIntersection(Game &game);
 
-    void checkWallCollision(World &world);
+    void checkWallCollision(World &world, Game &game);
 
     template <typename V, typename U>
     bool isElapse(sf::Vector2<V> point1, sf::Vector2<U> point2);

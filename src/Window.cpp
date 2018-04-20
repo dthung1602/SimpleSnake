@@ -3,24 +3,22 @@
 //
 
 #include "Window.h"
+#include "Game.h"
 
 void Window::beginDraw() {
     window.clear(sf::Color::Black);
-
-    for (auto &textboxes : textboxes)
-        textboxes->render(*this);
 }
 
 void Window::endDraw() {
     window.display();
 }
 
-void Window::update() {
+void Window::update(Game &game) {
     sf::Event event{};
     while (window.pollEvent(event)) {
         switch (event.type) {
             case sf::Event::Closed:
-                done = true;
+                game.setDone();
                 break;
             case sf::Event::KeyPressed:
                 if (event.key.code == sf::Keyboard::F5)

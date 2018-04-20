@@ -15,11 +15,13 @@ class TextBox {
 public:
     TextBox() = default;
 
-    TextBox(const std::string &content, std::shared_ptr<sf::Font> font, unsigned int textSize);
+    TextBox(const std::string &content, const sf::Font &font, unsigned int textSize);
+
+    void setVisible(bool v) { visible = v; }
 
     void setText(const std::string &content);
 
-    void setFont(const std::shared_ptr<sf::Font>& font);
+    void setFont(const sf::Font &font);
 
     void setTextSize(unsigned int size);
 
@@ -36,9 +38,9 @@ public:
     void render(Window &window);
 
 private:
+    bool visible = true;
     sf::Vector2f padding;
     sf::Text text;
-    std::shared_ptr<sf::Font> font;
     sf::RectangleShape background;
 };
 

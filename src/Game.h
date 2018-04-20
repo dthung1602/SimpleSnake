@@ -8,6 +8,7 @@
 #include "Window.h"
 #include "Snake.h"
 #include "World.h"
+#include "HUD.h"
 
 class Game {
 public:
@@ -23,16 +24,44 @@ public:
 
     void checkClock();
 
-    bool timeIntervalPassed() { return timePassed; };
+    void reset();
+
+    void setDone() { done = true; }
+
+    auto isDone() { return done; };
+
+    void incScore();
+
+    void decLife();
+
+    void decAllLives();
+
+    auto isLost() { return life == 0; }
+
+    auto getScore() { return score; }
+
+    auto getLife() { return life; }
+
+    auto isStateChanged() { return stateChanged; }
+
+    void clearStateChanged() { stateChanged = false; }
 
     Window &getWindow() { return window; };
 
 private:
     static const char GAME_NAME[];
+    static const unsigned int INIT_LIVES = 3;
+    static const unsigned int SCORE_PER_FOOD = 10;
 
     Window window;
     World world;
     Snake snake;
+    HUD hud;
+
+    bool done = false;
+    bool stateChanged = true;
+    unsigned int score;
+    unsigned int life;
 
     sf::Clock clock;
     bool timePassed = false;

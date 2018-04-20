@@ -12,25 +12,9 @@ using namespace std;
 
 Game::Game() : window(GAME_NAME),
                world(window),
-               snake(world) {
-
-    // load font
-    std::shared_ptr<sf::Font> fontPtr(new sf::Font());
-    if (!fontPtr->loadFromFile("../resources/arial.ttf"))    // todo fix path
-        exit(EXIT_FAILURE);
-
-    auto &textboxes = window.getTextboxes();
-
-    auto textbox = std::make_shared<TextBox>("blah", fontPtr, 20);
-
-    textbox->setPadding({5, 5});
-    textbox->setPosition({30, 30});
-    textbox->setTextColor(sf::Color::White);
-
-    textbox->setBackgroundColor(sf::Color::Magenta);
-    textbox->setBackgroundSize({100, 50});
-
-    textboxes.push_back(std::move(textbox));
+               snake(world),
+               hud() {
+    reset();
 }
 
 void Game::handleInput() {
@@ -45,11 +29,14 @@ void Game::handleInput() {
 }
 
 void Game::update() {
-    if (timePassed) {
-        cout << "------------------------------" << endl;
-        window.update();
+    if (isLost()) {
+        // todo
+        exit(0);
+    } else if (timePassed) {
+        window.update(*this);
         world.update(snake);
-        snake.update(world);
+        snake.update(world, *this);
+        hud.update(*this);
     }
 }
 
@@ -58,6 +45,7 @@ void Game::render() {
 
     world.render(window);
     snake.render(window);
+    hud.render(window);
 
     window.endDraw();
 }
@@ -67,7 +55,26 @@ void Game::checkClock() {
     timePassed = (sec > timeInterval) ? (clock.restart(), true) : false;
 }
 
+void Game::reset() {
+    score = 0;
+    life = INIT_LIVES;
+    world.reset(window);
+    snake.reset(world);
+}
+
+void Game::incScore() {
+    stateChanged = true;
+    score += SCORE_PER_FOOD;
+};
+
+void Game::decLife() {
+    stateChanged = true;
+    life--;
+}
+
+void Game::decAllLives() {
+    stateChanged = true;
+    life = 0;
+}
+
 const char Game::GAME_NAME[] = "SFML Snake";
-
-
-
